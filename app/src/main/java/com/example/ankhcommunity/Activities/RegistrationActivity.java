@@ -40,7 +40,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private EditText userName, userEmail, userPassword, userConfirmPassword;
     private ProgressBar loadingProgress;
-    private Button registrationBtn;
+    private Button registrationBtn, anonymousLBtn;
 
     private FirebaseAuth mAuth;
 
@@ -49,16 +49,33 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        //anonymous login
+        anonymousLBtn = findViewById(R.id.anonymousLoginBtn);
+        anonymousLBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()) {
+                            showMessage("Registration Completed Successfully");
+                            updateUI();
+                        }
+                    }
+                });
+            }
+        });
+
         userName = findViewById(R.id.regName);
-        userEmail = findViewById(R.id.regEmail);
-        userPassword = findViewById(R.id.regPassword);
+        userEmail = findViewById(R.id.loginEmail);
+        userPassword = findViewById(R.id.loginPassword);
         userConfirmPassword = findViewById(R.id.regConfirmPassword);
         loadingProgress = findViewById(R.id.progressBar);
         registrationBtn = findViewById(R.id.regBtn);
 
         loadingProgress.setVisibility(View.INVISIBLE);
-
-        mAuth = FirebaseAuth.getInstance();
 
         registrationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +103,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        ImgUserPhoto = findViewById(R.id.regPhoto);
+        ImgUserPhoto = findViewById(R.id.loginPhoto);
 
         ImgUserPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
