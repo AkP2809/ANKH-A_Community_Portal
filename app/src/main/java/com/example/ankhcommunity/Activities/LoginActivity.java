@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    //user sign-in method
     private void userSignIn(String uEmail, String uPassword) {
         mAuth.signInWithEmailAndPassword(uEmail, uPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -83,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
                     //login successful
                     loginProgress.setVisibility(View.INVISIBLE);
                     loginBtn.setVisibility(View.VISIBLE);
+
+                    showMessage("Login Successful!");
                     updateUI();
                 } else {
                     showMessage(task.getException().getMessage());
@@ -94,11 +97,13 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //redirect to home page
     private void updateUI() {
         startActivity(HomePageActivity);
         finish();
     }
 
+    //simple method to display toast
     private void showMessage(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }

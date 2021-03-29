@@ -60,7 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            showMessage("Registration Completed Successfully");
+                            showMessage("Signed-in anonymously!");
                             updateUI();
                         }
                     }
