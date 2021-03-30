@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-        HomePageActivity = new Intent(this, com.example.ankhcommunity.Activities.HomePageActivity.class);
+        HomePageActivity = new Intent(this, com.example.ankhcommunity.Activities.Home.class);
 
         loginPhoto = findViewById(R.id.loginPhoto);
         loginPhoto.setOnClickListener(new View.OnClickListener() {

@@ -42,8 +42,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    //firebase bom
     implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    //firebase authentication
     implementation 'com.google.firebase:firebase-auth'
+    //firebase storage
     implementation 'com.google.firebase:firebase-storage'
+    //firebase analytics
     implementation 'com.google.firebase:firebase-analytics'
+    //glide libraries
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }
