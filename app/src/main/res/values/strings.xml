@@ -27,5 +27,6 @@
         <item>Irregularity of garbage-collecting vehicles</item>
         <item>Uncleaned dustbins</item>
         <item>Dead animal(s)</item>
+        <item>Others</item>
     </string-array>
 </resources>
