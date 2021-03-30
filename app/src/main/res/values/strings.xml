@@ -13,4 +13,19 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_logout">Logout</string>
     <string name="title_activity_home">Home</string>
+
+    <string-array name="complain_categories">
+        <item>Urination in Public/Open Defecation</item>
+        <item>Burning of Garbage in open space</item>
+        <item>Debris removal/Construction material</item>
+        <item>Improper disposal of Fecal waste/Septage</item>
+        <item>Stagnant water on the road</item>
+        <item>Sewerage/Storm water overflow</item>
+        <item>Open Manholes/Drains</item>
+        <item>Public toilet(s) cleaning</item>
+        <item>Sweeping not done</item>
+        <item>Irregularity of garbage-collecting vehicles</item>
+        <item>Uncleaned dustbins</item>
+        <item>Dead animal(s)</item>
+    </string-array>
 </resources>

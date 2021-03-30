@@ -1,9 +1,17 @@
 package com.example.ankhcommunity.Activities;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +36,11 @@ public class Home extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     FirebaseUser currentUser;
     FirebaseAuth mAuth;
+    Dialog popupAddPost;
+
+    ImageView popupUserProfilePhoto, popupComplainPhoto, popupPostComplainBtn;
+    EditText popupComplainTitle, popupComplainDescription;
+    ProgressBar popupProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +53,14 @@ public class Home extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        //popup init
+        initPopup();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                popupAddPost.show();
             }
         });
 
@@ -67,6 +82,43 @@ public class Home extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         updateNavHeader();
+    }
+
+    private void initPopup() {
+        popupAddPost = new Dialog(this);
+        popupAddPost.setContentView(R.layout.post_complain_popup);
+        popupAddPost.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupAddPost.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        popupAddPost.getWindow().getAttributes().gravity = Gravity.TOP;
+
+        //spinner for dropdown menu
+        Spinner spinner = (Spinner) popupAddPost.findViewById(R.id.popup_spinner_category);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.complain_categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        //init popup widgets
+        popupUserProfilePhoto = popupAddPost.findViewById(R.id.popup_user_photo);
+        popupComplainPhoto = popupAddPost.findViewById(R.id.popup_complain_photo);
+        popupPostComplainBtn = popupAddPost.findViewById(R.id.popup_complain_submit);
+
+        popupComplainTitle = popupAddPost.findViewById(R.id.popup_complain_title);
+        popupComplainDescription = popupAddPost.findViewById(R.id.popup_complain_description);
+
+        popupProgressBar = popupAddPost.findViewById(R.id.popup_progressBar);
+
+        //loading user profile photo
+        Glide.with(Home.this).load(currentUser.getPhotoUrl()).into(popupUserProfilePhoto);
+
+        //Add post click listener
+        popupPostComplainBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupPostComplainBtn.setVisibility(View.INVISIBLE);
+                popupProgressBar.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

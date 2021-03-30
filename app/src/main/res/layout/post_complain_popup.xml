@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:padding="8dp"
+        android:background="#ffffff"
+        android:id="@+id/popup_user_photo"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/popup_spinner_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/popup_complain_title"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <EditText
+        android:background="@drawable/popup_edittext_style"
+        android:id="@+id/popup_complain_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Title"
+        app:layout_constraintEnd_toStartOf="@+id/popup_user_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:background="@drawable/popup_edittext_style"
+        android:id="@+id/popup_spinner_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/popup_complain_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_complain_title" />
+
+    <EditText
+        android:background="@drawable/popup_edittext_style"
+        android:id="@+id/popup_complain_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_spinner_category" />
+
+    <ImageView
+        android:background="#2d2d2d"
+        android:id="@+id/popup_complain_photo"
+        android:layout_width="0dp"
+        android:layout_height="228dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_complain_description"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <ImageView
+        android:id="@+id/popup_complain_submit"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/circle_bg"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/popup_complain_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_complain_photo"
+        android:src="@drawable/ic_baseline_create_24" />
+
+    <ProgressBar
+        android:background="@drawable/circle_bg"
+        android:visibility="invisible"
+        android:id="@+id/popup_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="58dp"
+        android:layout_height="53dp"
+        app:layout_constraintBottom_toBottomOf="@+id/popup_complain_submit"
+        app:layout_constraintEnd_toEndOf="@+id/popup_complain_submit"
+        app:layout_constraintStart_toStartOf="@+id/popup_complain_submit"
+        app:layout_constraintTop_toTopOf="@+id/popup_complain_submit" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
