@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    /*
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -119,5 +119,4 @@ public class LoginActivity extends AppCompatActivity {
             updateUI();
         }
     }
-    */
 }

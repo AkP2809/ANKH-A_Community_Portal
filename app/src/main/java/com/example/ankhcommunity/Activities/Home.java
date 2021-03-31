@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.AdapterView;
@@ -109,6 +110,19 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemSelecte
         //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //logout fragment
+        navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                mAuth.signOut();
+                Toast.makeText(getApplicationContext(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
+                Intent loginActivity = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginActivity);
+
+                return true;
+            }
+        });
 
         updateNavHeader();
 
@@ -217,11 +231,19 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemSelecte
                                     String complainImageDownloadLink = uri.toString();
 
                                     //now creating POST object
-
-                                    PostModel post = new PostModel( popupComplainTitle.getText().toString(),
-                                            complainCategory, popupComplainDescription.getText().toString(),
-                                            complainImageDownloadLink, currentUser.getUid(),
-                                            currentUser.getPhotoUrl().toString());
+                                    //checking if user photo exists
+                                    PostModel post;
+                                    if( currentUser.getPhotoUrl() != null ) {
+                                        post = new PostModel( popupComplainTitle.getText().toString(),
+                                                complainCategory, popupComplainDescription.getText().toString(),
+                                                complainImageDownloadLink, currentUser.getUid(),
+                                                currentUser.getPhotoUrl().toString());
+                                    } else {
+                                        post = new PostModel( popupComplainTitle.getText().toString(),
+                                                complainCategory, popupComplainDescription.getText().toString(),
+                                                complainImageDownloadLink, currentUser.getUid(),
+                                                null);
+                                    }
 
                                     //add POST object to firebase
                                     addComplain(post);
@@ -301,8 +323,12 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemSelecte
         navUserEmail.setText(currentUser.getEmail());
         navUserName.setText(currentUser.getDisplayName());
 
-        //using glide to load the user profile photo
-        Glide.with(this).load(currentUser.getPhotoUrl()).into(navUserPhoto);
+        //using glide to load the user profile photo if it exists
+        if( currentUser.getPhotoUrl() != null ) {
+            Glide.with(this).load(currentUser.getPhotoUrl()).into(navUserPhoto);
+        } else {
+            Glide.with(this).load(R.drawable.defaultuser).into(navUserPhoto);
+        }
     }
 
     @Override

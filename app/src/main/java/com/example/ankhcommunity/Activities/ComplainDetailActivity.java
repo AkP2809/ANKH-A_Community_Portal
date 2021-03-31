@@ -2,7 +2,10 @@ package com.example.ankhcommunity.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.pm.LauncherApps;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -14,16 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.ankhcommunity.Adapters.CommentAdapter;
 import com.example.ankhcommunity.Models.CommentModel;
 import com.example.ankhcommunity.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class ComplainDetailActivity extends AppCompatActivity {
@@ -37,6 +46,12 @@ public class ComplainDetailActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser currentUser;
     FirebaseDatabase firebaseDatabase;
+
+    RecyclerView commentRecyclerView;
+    List<CommentModel> commentList = new ArrayList<CommentModel>();
+    CommentAdapter commentAdapter;
+
+    static String COMMENT_KEY = "Comments";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +75,14 @@ public class ComplainDetailActivity extends AppCompatActivity {
         complainCommentCurrentUserPhoto = findViewById(R.id.complain_detail_current_user_comment_photo);
         complainCommentPostBtn = findViewById(R.id.complain_detail_post_comment_btn);
 
+        commentRecyclerView = findViewById(R.id.rv_comments);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        llm.setStackFromEnd(true);
+        llm.setReverseLayout(true);
+        commentRecyclerView.setLayoutManager(llm);
+        commentRecyclerView.setHasFixedSize(true);
+
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -70,12 +93,12 @@ public class ComplainDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 complainCommentPostBtn.setVisibility(View.INVISIBLE);
 
-                DatabaseReference commentReference = firebaseDatabase.getReference("Comments").child(postKey).push();
+                DatabaseReference commentReference = firebaseDatabase.getReference(COMMENT_KEY).child(postKey).push();
 
                 String commentDescription = complainCommentDescription.getText().toString();
                 String userID = currentUser.getUid();
                 String userName = currentUser.getDisplayName();
-                String userPhoto = currentUser.getPhotoUrl().toString();
+                String userPhoto = (currentUser.getPhotoUrl() != null ? currentUser.getPhotoUrl().toString() : null);
 
                 CommentModel commentModel = new CommentModel(commentDescription, userID, userPhoto, userName);
 
@@ -108,22 +131,54 @@ public class ComplainDetailActivity extends AppCompatActivity {
         String cCategory = getIntent().getExtras().getString("complainCategory");
         complainCategory.setText(cCategory);
 
-        //timestamp
-
         String uImage = getIntent().getExtras().getString("userPhoto");
-        Glide.with(this).load(uImage).into(complainUserPhoto);
+        if(uImage != null) {
+            Glide.with(this).load(uImage).into(complainUserPhoto);
+        } else {
+            Glide.with(this).load(R.drawable.defaultuser).into(complainUserPhoto);
+        }
 
         String cDescription = getIntent().getExtras().getString("complainDescription");
         complainDescription.setText(cDescription);
 
-        //comment user image
-        Glide.with(this).load(currentUser.getPhotoUrl()).into(complainCommentCurrentUserPhoto);
+        //comment user image if it exists
+        if(currentUser.getPhotoUrl() != null) {
+            Glide.with(this).load(currentUser.getPhotoUrl()).into(complainCommentCurrentUserPhoto);
+        } else {
+            Glide.with(this).load(R.drawable.defaultuser).into(complainCommentCurrentUserPhoto);
+        }
 
         //get complain ID
         postKey = getIntent().getExtras().getString("postKey");
 
         String cDate = timeStampToString(getIntent().getExtras().getLong("complainDate"));
         complainDateName.setText(cDate);
+
+        //init recyclerview for comments
+        initCommentRV();
+    }
+
+    private void initCommentRV() {
+        DatabaseReference commentRef = firebaseDatabase.getReference(COMMENT_KEY).child(postKey);
+
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                commentList = new ArrayList<CommentModel>();
+                for(DataSnapshot snap : snapshot.getChildren()) {
+                    CommentModel comment = snap.getValue(CommentModel.class);
+                    commentList.add(comment);
+                }
+
+                commentAdapter = new CommentAdapter(getApplicationContext(), commentList);
+                commentRecyclerView.setAdapter(commentAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void showMessage(String message) {

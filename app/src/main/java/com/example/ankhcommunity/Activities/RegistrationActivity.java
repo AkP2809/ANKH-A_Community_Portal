@@ -50,21 +50,24 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //anonymous login
         anonymousLBtn = findViewById(R.id.anonymousLoginBtn);
         anonymousLBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            showMessage("Signed-in anonymously!");
-                            updateUI();
+                if(currentUser == null) {
+                    mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()) {
+                                showMessage("Signed-in anonymously!");
+                                updateUI();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
@@ -127,13 +130,18 @@ public class RegistrationActivity extends AppCompatActivity {
                     showMessage("Account created Successfully!");
 
                     //after creation of user account, profile photo and name updation is needed
-                    updateUserDetails(uName, pickedImgUri, mAuth.getCurrentUser());
+                    //before that, checking if user has picked an image from gallery or not
+                    if(pickedImgUri != null) {
+                        updateUserDetails(uName, pickedImgUri, mAuth.getCurrentUser());
+                    } else {
+                        updateUserDetailsWithoutProfilePhoto(uName, mAuth.getCurrentUser());
+                    }
                 } else {
                     //user account creation failed
                     showMessage("Account creation failed. Please try again!" + task.getException().getMessage());
 
                     registrationBtn.setVisibility(View.VISIBLE);
-                    registrationBtn.setVisibility(View.INVISIBLE);
+                    loadingProgress.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -170,6 +178,22 @@ public class RegistrationActivity extends AppCompatActivity {
                         });
                     }
                 });
+            }
+        });
+    }
+
+    //update user name without profile photo
+    private void updateUserDetailsWithoutProfilePhoto(String uName, FirebaseUser currentUser) {
+        UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(uName).build();
+
+        currentUser.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    //user profile successfully updated
+                    showMessage("Registration Completed Successfully");
+                    updateUI();
+                }
             }
         });
     }
