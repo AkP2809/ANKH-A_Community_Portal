@@ -1,19 +1,27 @@
 package com.example.ankhcommunity.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.ankhcommunity.Models.CommentModel;
 import com.example.ankhcommunity.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -28,6 +36,7 @@ public class ComplainDetailActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     FirebaseUser currentUser;
+    FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +62,38 @@ public class ComplainDetailActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        //adding post comment button click listener
+        complainCommentPostBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                complainCommentPostBtn.setVisibility(View.INVISIBLE);
+
+                DatabaseReference commentReference = firebaseDatabase.getReference("Comments").child(postKey).push();
+
+                String commentDescription = complainCommentDescription.getText().toString();
+                String userID = currentUser.getUid();
+                String userName = currentUser.getDisplayName();
+                String userPhoto = currentUser.getPhotoUrl().toString();
+
+                CommentModel commentModel = new CommentModel(commentDescription, userID, userPhoto, userName);
+
+                commentReference.setValue(commentModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        showMessage("Comment posted.");
+                        complainCommentDescription.setText("");
+                        complainCommentPostBtn.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        showMessage("Couldn't post comment! " + e.getMessage());
+                    }
+                });
+            }
+        });
 
         //binding all the above data into views
         //first we need to get complain data, for that, we need to send the detail data to PostAdapter
@@ -83,6 +124,10 @@ public class ComplainDetailActivity extends AppCompatActivity {
 
         String cDate = timeStampToString(getIntent().getExtras().getLong("complainDate"));
         complainDateName.setText(cDate);
+    }
+
+    private void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private String timeStampToString(long time) {
