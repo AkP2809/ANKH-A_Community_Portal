@@ -44,6 +44,8 @@ public class HomeFragment extends Fragment {
         postRecyclerView = fragmentView.findViewById(R.id.complainRV);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
+        llm.setStackFromEnd(true);
+        llm.setReverseLayout(true);
         postRecyclerView.setLayoutManager(llm);
         postRecyclerView.setHasFixedSize(true);
 

@@ -1,6 +1,7 @@
 package com.example.ankhcommunity.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.ankhcommunity.Activities.ComplainDetailActivity;
 import com.example.ankhcommunity.Models.PostModel;
 import com.example.ankhcommunity.R;
 
@@ -60,6 +62,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
             imgPost = itemView.findViewById(R.id.row_complain_image);
             imgUserProfile = itemView.findViewById(R.id.row_user_profile_photo);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent complainDetailActivity = new Intent(mContext, ComplainDetailActivity.class);
+                    int position = getAdapterPosition();
+
+                    complainDetailActivity.putExtra("complainTitle",mData.get(position).getComplainTitle());
+                    complainDetailActivity.putExtra("complainCategory",mData.get(position).getComplainCategory());
+                    complainDetailActivity.putExtra("complainDescription",mData.get(position).getComplainDescription());
+                    complainDetailActivity.putExtra("postKey",mData.get(position).getPostKey());
+                    complainDetailActivity.putExtra("complainPicture",mData.get(position).getComplainPicture());
+                    complainDetailActivity.putExtra("userPhoto",mData.get(position).getUserPhoto());
+
+                    //complainDetailActivity.putExtra("userName",mData.get(position).getUserName());
+
+                    long timeStamp = (long) mData.get(position).getTimeStamp();
+                    complainDetailActivity.putExtra("complainDate",timeStamp);
+
+                    mContext.startActivity(complainDetailActivity);
+                }
+            });
         }
 
     }
