@@ -33,11 +33,10 @@ public class HomeFragment extends Fragment {
     RecyclerView postRecyclerView;
     PostAdapter postAdapter;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, upvoteReference;
     List<PostModel> complaintList = new ArrayList<PostModel>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         View fragmentView = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -54,13 +53,8 @@ public class HomeFragment extends Fragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Complaints");
+        upvoteReference = firebaseDatabase.getReference("Upvotes");
 
-        /*homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
         return fragmentView;
     }
 
@@ -76,6 +70,8 @@ public class HomeFragment extends Fragment {
                 for( DataSnapshot complainSnap : snapshot.getChildren() ) {
                     PostModel post = complainSnap.getValue(PostModel.class);
                     complaintList.add(post);
+
+                    //DatabaseReference postRef =  firebaseDatabase.getReference("Comments").child(post.getPostKey());
                 }
 
                 postAdapter = new PostAdapter(getActivity(), complaintList);

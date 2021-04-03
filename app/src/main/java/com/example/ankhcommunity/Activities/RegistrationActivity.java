@@ -40,7 +40,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private EditText userName, userEmail, userPassword, userConfirmPassword;
     private ProgressBar loadingProgress;
-    private Button registrationBtn, anonymousLBtn;
+    private Button registrationBtn;
 
     private FirebaseAuth mAuth;
 
@@ -49,31 +49,14 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        getSupportActionBar().hide();
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        //anonymous login
-        anonymousLBtn = findViewById(R.id.anonymousLoginBtn);
-        anonymousLBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(currentUser == null) {
-                    mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()) {
-                                showMessage("Signed-in anonymously!");
-                                updateUI();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
         userName = findViewById(R.id.regName);
-        userEmail = findViewById(R.id.loginEmail);
-        userPassword = findViewById(R.id.loginPassword);
+        userEmail = findViewById(R.id.regEmail);
+        userPassword = findViewById(R.id.regPassword);
         userConfirmPassword = findViewById(R.id.regConfirmPassword);
         loadingProgress = findViewById(R.id.progressBar);
         registrationBtn = findViewById(R.id.regBtn);

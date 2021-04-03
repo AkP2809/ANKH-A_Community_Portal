@@ -13,6 +13,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -73,8 +75,12 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemSelecte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         //firebase init
@@ -203,7 +209,11 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemSelecte
         popupProgressBar = popupAddPost.findViewById(R.id.popup_progressBar);
 
         //loading user profile photo
-        Glide.with(Home.this).load(currentUser.getPhotoUrl()).into(popupUserProfilePhoto);
+        if(currentUser.getPhotoUrl() != null) {
+            Glide.with(Home.this).load(currentUser.getPhotoUrl()).into(popupUserProfilePhoto);
+        } else {
+            Glide.with(Home.this).load(R.drawable.defaultuser).into(popupUserProfilePhoto);
+        }
 
         //Add post click listener
         popupPostComplainBtn.setOnClickListener(new View.OnClickListener() {

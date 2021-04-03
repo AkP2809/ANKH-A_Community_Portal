@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ankhcommunity.R;
@@ -22,35 +23,30 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText userEmail, userPassword;
-    private Button loginBtn;
-    private ProgressBar loginProgress;
+    private Button loginBtn, anonymousLoginBtn;
+    private ProgressBar loginProgress, anonymousLoginProgress;
     private FirebaseAuth mAuth;
     private Intent HomePageActivity;
-    private ImageView loginPhoto;
+    private TextView regRedirect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        HomePageActivity = new Intent(this, com.example.ankhcommunity.Activities.Home.class);
+        getSupportActionBar().hide();
 
-        loginPhoto = findViewById(R.id.loginPhoto);
-        loginPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent registerActivity = new Intent(getApplicationContext(), RegistrationActivity.class);
-                startActivity(registerActivity);
-                finish();
-            }
-        });
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         userEmail = findViewById(R.id.loginEmail);
         userPassword = findViewById(R.id.loginPassword);
 
         loginProgress = findViewById(R.id.loginProgressBar);
         loginProgress.setVisibility(View.INVISIBLE);
+
+        anonymousLoginProgress = findViewById(R.id.anonymousProgressBar);
+        anonymousLoginProgress.setVisibility(View.INVISIBLE);
 
         loginBtn = findViewById(R.id.loginBtn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +65,41 @@ public class LoginActivity extends AppCompatActivity {
                     loginProgress.setVisibility(View.INVISIBLE);
                 } else {
                     userSignIn(uEmail, uPassword);
+                }
+            }
+        });
+
+        regRedirect = findViewById(R.id.regRedirectText);
+        regRedirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //anonymous login
+        anonymousLoginBtn = findViewById(R.id.anonymousLoginBtn);
+        anonymousLoginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anonymousLoginBtn.setVisibility(View.INVISIBLE);
+                anonymousLoginProgress.setVisibility(View.VISIBLE);
+
+                if(currentUser == null) {
+                    mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()) {
+                                showMessage("Signed-in anonymously!");
+                                updateUI();
+                            }
+                        }
+                    });
+                } else {
+                    showMessage("Something went wrong. Please try again later");
+                    anonymousLoginBtn.setVisibility(View.VISIBLE);
+                    anonymousLoginProgress.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -99,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //redirect to home page
     private void updateUI() {
+        HomePageActivity = new Intent(this, com.example.ankhcommunity.Activities.Home.class);
         startActivity(HomePageActivity);
         finish();
     }

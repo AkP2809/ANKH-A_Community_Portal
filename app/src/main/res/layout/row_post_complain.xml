@@ -7,15 +7,15 @@
     android:layout_height="250dp">
 
     <ImageView
-        android:scaleType="centerCrop"
         android:id="@+id/row_complain_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_launcher_background" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/row_image_gradient"
@@ -27,15 +27,15 @@
         app:srcCompat="@drawable/black_gradient" />
 
     <TextView
-        android:textColor="#fff"
         android:id="@+id/row_complain_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
+        android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="@+id/row_complain_image"
         app:layout_constraintEnd_toStartOf="@+id/row_user_profile_photo"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="@+id/row_image_gradient"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/row_user_profile_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -56,17 +56,54 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:textColor="#fff"
         android:id="@+id/row_complain_category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"
         android:text="TextView"
+        android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/row_user_profile_photo"
         app:layout_constraintStart_toStartOf="@+id/row_image_gradient"
         app:layout_constraintTop_toBottomOf="@+id/row_complain_title" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/row_image_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/row_complain_image"
+        app:layout_constraintVertical_bias="0.95">
+
+        <ImageView
+            android:id="@+id/upvoteBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_fav_shadow_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/row_image_gradient"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/row_complain_image"
+            app:layout_constraintVertical_bias="0.914" />
+
+        <TextView
+            android:id="@+id/upVoteCountView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="0"
+            android:textColor="#fff"
+            android:paddingTop="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
