@@ -1,6 +1,9 @@
 # ANKH-A_Community_Portal
---SOON TO COME XD--
 
-1) Registration
-2) Login
-3) Anonymous Login
+ANKH v1.1 Update Log:
+
+-> Added Upvote Functionality in Home Page
+-> Added Splash Screen Animation
+-> Added Circular Views for images
+-> Fully redesigned pages for Login and Registration
+-> Some other minor tweaks
